@@ -113,7 +113,6 @@ public:
             std::cout << "Array is empty" << std::endl;
             return;
         }
-        delete &this->arr[(this->frontIndex + this->size - 1) % this->capacity];
         this->size--;
         if (this->size <= this->capacity / 4)
         {
@@ -128,7 +127,6 @@ public:
             std::cout << "Array is empty" << std::endl;
             return;
         }
-        delete &this->arr[this->frontIndex];
         this->frontIndex = (this->frontIndex + 1) % this->capacity;
         this->size--;
         if (this->size <= this->capacity / 4)
