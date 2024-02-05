@@ -153,4 +153,46 @@ public:
         this->arr = new T[this->capacity];
         this->frontIndex = -1;
     }
+
+    T QSelect(int k) {
+        if (k < 0 || k >= this->size) {
+            std::cout << "Invalid value of k" << std::endl;
+            return T(); // Return default value of type T
+        }
+        T* tempArr = new T[this->size];
+        for (int i = 0; i < this->size; i++) {
+            tempArr[i] = this->arr[i];
+        }
+        int left = 0;
+        int right = this->size - 1;
+        while (left <= right) {
+            int pivotIndex = left + (right - left) / 2;
+            T pivotValue = tempArr[pivotIndex];
+            int i = left;
+            int j = right;
+            while (i <= j) {
+                while (tempArr[i] < pivotValue) {
+                    i++;
+                }
+                while (tempArr[j] > pivotValue) {
+                    j--;
+                }
+                if (i <= j) {
+                    std::swap(tempArr[i], tempArr[j]);
+                    i++;
+                    j--;
+                }
+            }
+            if (k <= j) {
+                right = j;
+            } else if (k >= i) {
+                left = i;
+            } else {
+                delete[] tempArr;
+                return tempArr[k];
+            }
+        }
+        delete[] tempArr;
+        return T(); // Return default value of type T
+    }
 };  
