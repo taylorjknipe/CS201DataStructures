@@ -8,6 +8,16 @@ private:
     int size;
     int capacity;
     int frontIndex;
+    void resize(int newCapacity) {
+        T *temp = new T[newCapacity];
+        for (int i = 0; i < this->size; i++) {
+            temp[i] = this->arr[(this->frontIndex + i) % this->capacity];
+        }
+        delete[] this->arr;
+        this->arr = temp;
+        this->capacity = newCapacity;
+        this->frontIndex = 0;
+    }
 
 public:
     CircularDynamicArray()
@@ -31,7 +41,7 @@ public:
         delete[] arr;
     }
 
-    CircularDynamicArray(const CircularDynamicArray& other)
+    CircularDynamicArray(const CircularDynamicArray &other)
     {
         this->size = other.size;
         this->capacity = other.capacity;
@@ -44,7 +54,7 @@ public:
         }
     }
 
-    CircularDynamicArray& operator=(const CircularDynamicArray& other)
+    CircularDynamicArray &operator=(const CircularDynamicArray &other)
     {
         if (this != &other)
         {
@@ -62,5 +72,31 @@ public:
         }
 
         return *this;
+    }
+
+    T &operator[](int i)
+    {
+        if (i < 0 || i >= this->size)
+        {
+            std::cout << "Index out of bounds" << std::endl;
+        }
+        return this->arr[i];
+    }
+
+    void addEnd(T item) {
+        if (this->size == this->capacity) {
+            this->resize(this->capacity * 2);
+        }
+        this->arr[(this->frontIndex + this->size) % this->capacity] = item;
+        this->size++;
+    }
+
+    void addFront(T item) {
+        if (this->size == this->capacity) {
+            this->resize(this->capacity * 2);
+        }
+        this->frontIndex = (this->frontIndex - 1 + this->capacity) % this->capacity;
+        this->arr[this->frontIndex] = item;
+        this->size++;
     }
 };
