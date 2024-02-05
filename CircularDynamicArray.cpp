@@ -135,4 +135,22 @@ public:
             this->resize(this->capacity / 2);
         }
     }
+
+    int length()
+    {
+        return this->size;
+    }
+
+    int getCapacity()
+    {
+        return this->capacity;
+    }
+
+    void clear() {
+        delete[] this->arr;
+        this->size = 0;
+        this->capacity = 2;
+        this->arr = new T[this->capacity];
+        this->frontIndex = -1;
+    }
 };  
