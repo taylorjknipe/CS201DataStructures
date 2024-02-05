@@ -8,9 +8,11 @@ private:
     int size;
     int capacity;
     int frontIndex;
-    void resize(int newCapacity) {
+    void resize(int newCapacity)
+    {
         T *temp = new T[newCapacity];
-        for (int i = 0; i < this->size; i++) {
+        for (int i = 0; i < this->size; i++)
+        {
             temp[i] = this->arr[(this->frontIndex + i) % this->capacity];
         }
         delete[] this->arr;
@@ -83,20 +85,54 @@ public:
         return this->arr[i];
     }
 
-    void addEnd(T item) {
-        if (this->size == this->capacity) {
+    void addEnd(T item)
+    {
+        if (this->size == this->capacity)
+        {
             this->resize(this->capacity * 2);
         }
         this->arr[(this->frontIndex + this->size) % this->capacity] = item;
         this->size++;
     }
 
-    void addFront(T item) {
-        if (this->size == this->capacity) {
+    void addFront(T item)
+    {
+        if (this->size == this->capacity)
+        {
             this->resize(this->capacity * 2);
         }
         this->frontIndex = (this->frontIndex - 1 + this->capacity) % this->capacity;
         this->arr[this->frontIndex] = item;
         this->size++;
     }
-};
+
+    void delEnd()
+    {
+        if (this->size == 0)
+        {
+            std::cout << "Array is empty" << std::endl;
+            return;
+        }
+        delete &this->arr[(this->frontIndex + this->size - 1) % this->capacity];
+        this->size--;
+        if (this->size <= this->capacity / 4)
+        {
+            this->resize(this->capacity / 2);
+        }
+    }
+
+    void delFront() {
+        if (this->size == 0)
+        {
+            std::cout << "Array is empty" << std::endl;
+            return;
+        }
+        delete &this->arr[this->frontIndex];
+        this->frontIndex = (this->frontIndex + 1) % this->capacity;
+        this->size--;
+        if (this->size <= this->capacity / 4)
+        {
+            this->resize(this->capacity / 2);
+        }
+    }
+};  
