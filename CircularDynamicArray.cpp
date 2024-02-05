@@ -17,11 +17,50 @@ public:
         this->arr = new T[this->capacity];
         this->frontIndex = -1;
     }
+
     CircularDynamicArray(int s)
     {
         this->size = s;
         this->capacity = s;
         this->arr = new T[this->capacity];
         this->frontIndex = -1;
+    }
+
+    ~CircularDynamicArray()
+    {
+        delete[] arr;
+    }
+
+    CircularDynamicArray(const CircularDynamicArray& other)
+    {
+        this->size = other.size;
+        this->capacity = other.capacity;
+        this->arr = new T[this->capacity];
+        this->frontIndex = other.frontIndex;
+
+        for (int i = 0; i < this->size; i++)
+        {
+            this->arr[i] = other.arr[i];
+        }
+    }
+
+    CircularDynamicArray& operator=(const CircularDynamicArray& other)
+    {
+        if (this != &other)
+        {
+            delete[] this->arr;
+
+            this->size = other.size;
+            this->capacity = other.capacity;
+            this->arr = new T[this->capacity];
+            this->frontIndex = other.frontIndex;
+
+            for (int i = 0; i < this->size; i++)
+            {
+                this->arr[i] = other.arr[i];
+            }
+        }
+
+        return *this;
     }
 };
