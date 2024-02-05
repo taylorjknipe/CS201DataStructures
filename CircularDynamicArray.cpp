@@ -280,4 +280,30 @@ public:
     {
         mergeSort(this->arr, 0, this->size - 1);
     }
+
+    int linearSearch(T item) {
+        for (int i = 0; i < this->size; i++) {
+            if (this->arr[i] == item) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    int binSearch(T item) {
+        int left = 0;
+        int right = this->size - 1;
+        while (left <= right) {
+            int mid = left + (right - left) / 2;
+            if (this->arr[mid] == item) {
+                return mid;
+            }
+            if (this->arr[mid] < item) {
+                left = mid + 1;
+            } else {
+                right = mid - 1;
+            }
+        }
+        return -1;
+    }
 };
