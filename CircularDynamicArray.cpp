@@ -121,7 +121,8 @@ public:
         }
     }
 
-    void delFront() {
+    void delFront()
+    {
         if (this->size == 0)
         {
             std::cout << "Array is empty" << std::endl;
@@ -146,7 +147,8 @@ public:
         return this->capacity;
     }
 
-    void clear() {
+    void clear()
+    {
         delete[] this->arr;
         this->size = 0;
         this->capacity = 2;
@@ -154,40 +156,53 @@ public:
         this->frontIndex = -1;
     }
 
-    T QSelect(int k) {
-        if (k < 0 || k >= this->size) {
+    T QSelect(int k)
+    {
+        if (k < 0 || k >= this->size)
+        {
             std::cout << "Invalid value of k" << std::endl;
             return T(); // Return default value of type T
         }
-        T* tempArr = new T[this->size];
-        for (int i = 0; i < this->size; i++) {
+        T *tempArr = new T[this->size];
+        for (int i = 0; i < this->size; i++)
+        {
             tempArr[i] = this->arr[i];
         }
         int left = 0;
         int right = this->size - 1;
-        while (left <= right) {
+        while (left <= right)
+        {
             int pivotIndex = left + (right - left) / 2;
             T pivotValue = tempArr[pivotIndex];
             int i = left;
             int j = right;
-            while (i <= j) {
-                while (tempArr[i] < pivotValue) {
+            while (i <= j)
+            {
+                while (tempArr[i] < pivotValue)
+                {
                     i++;
                 }
-                while (tempArr[j] > pivotValue) {
+                while (tempArr[j] > pivotValue)
+                {
                     j--;
                 }
-                if (i <= j) {
+                if (i <= j)
+                {
                     std::swap(tempArr[i], tempArr[j]);
                     i++;
                     j--;
                 }
             }
-            if (k <= j) {
+            if (k <= j)
+            {
                 right = j;
-            } else if (k >= i) {
+            }
+            else if (k >= i)
+            {
                 left = i;
-            } else {
+            }
+            else
+            {
                 delete[] tempArr;
                 return tempArr[k];
             }
@@ -195,4 +210,74 @@ public:
         delete[] tempArr;
         return T(); // Return default value of type T
     }
-};  
+    void merge(T *arr, int left, int mid, int right)
+    {
+        int leftSize = mid - left + 1;
+        int rightSize = right - mid;
+
+        T *leftArr = new T[leftSize];
+        T *rightArr = new T[rightSize];
+
+        for (int i = 0; i < leftSize; i++)
+        {
+            leftArr[i] = arr[left + i];
+        }
+
+        for (int i = 0; i < rightSize; i++)
+        {
+            rightArr[i] = arr[mid + 1 + i];
+        }
+
+        int i = 0;
+        int j = 0;
+        int k = left;
+
+        while (i < leftSize && j < rightSize)
+        {
+            if (leftArr[i] <= rightArr[j])
+            {
+                arr[k] = leftArr[i];
+                i++;
+            }
+            else
+            {
+                arr[k] = rightArr[j];
+                j++;
+            }
+            k++;
+        }
+
+        while (i < leftSize)
+        {
+            arr[k] = leftArr[i];
+            i++;
+            k++;
+        }
+
+        while (j < rightSize)
+        {
+            arr[k] = rightArr[j];
+            j++;
+            k++;
+        }
+
+        delete[] leftArr;
+        delete[] rightArr;
+    }
+
+    void mergeSort(T *arr, int left, int right)
+    {
+        if (left < right)
+        {
+            int mid = left + (right - left) / 2;
+            mergeSort(arr, left, mid);
+            mergeSort(arr, mid + 1, right);
+            merge(arr, left, mid, right);
+        }
+    }
+
+    void Sort()
+    {
+        mergeSort(this->arr, 0, this->size - 1);
+    }
+};
