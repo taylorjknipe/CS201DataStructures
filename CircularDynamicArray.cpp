@@ -101,8 +101,12 @@ public:
         {
             this->resize(this->capacity * 2);
         }
-        this->frontIndex = (this->frontIndex - 1 + this->capacity) % this->capacity;
-        this->arr[this->frontIndex] = item;
+        this->frontIndex = 0;
+        for (int i = this->size; i > 0; i--)
+        {
+            this->arr[i] = this->arr[i - 1];
+        }
+        this->arr[0] = item;
         this->size++;
     }
 
@@ -127,7 +131,13 @@ public:
             std::cout << "Array is empty" << std::endl;
             return;
         }
-        this->frontIndex = (this->frontIndex + 1) % this->capacity;
+        this->arr[this->frontIndex] = T();
+        for (int i = 0; i < this->size; i++)
+        {
+            this->arr[(this->frontIndex + i) % this->capacity] = this->arr[(this->frontIndex + i + 1) % this->capacity];
+        }
+        this->frontIndex = 0;
+        arr[this->size - 1] = T();
         this->size--;
         if (this->size <= this->capacity / 4)
         {
@@ -279,26 +289,35 @@ public:
         mergeSort(this->arr, 0, this->size - 1);
     }
 
-    int linearSearch(T item) {
-        for (int i = 0; i < this->size; i++) {
-            if (this->arr[i] == item) {
+    int linearSearch(T item)
+    {
+        for (int i = 0; i < this->size; i++)
+        {
+            if (this->arr[i] == item)
+            {
                 return i;
             }
         }
         return -1;
     }
 
-    int binSearch(T item) {
+    int binSearch(T item)
+    {
         int left = 0;
         int right = this->size - 1;
-        while (left <= right) {
+        while (left <= right)
+        {
             int mid = left + (right - left) / 2;
-            if (this->arr[mid] == item) {
+            if (this->arr[mid] == item)
+            {
                 return mid;
             }
-            if (this->arr[mid] < item) {
+            if (this->arr[mid] < item)
+            {
                 left = mid + 1;
-            } else {
+            }
+            else
+            {
                 right = mid - 1;
             }
         }
