@@ -164,60 +164,51 @@ public:
         this->frontIndex = -1;
     }
 
+    int partition(int l, int r)
+    {
+        int pivotIndex = l + rand() % (r - l + 1);
+
+        swap(this->arr[pivotIndex], this->arr[r]);
+
+        int x = this->arr[r], i = l;
+        for (int j = l; j <= r - 1; j++)
+        {
+            if (this->arr[j] <= x)
+            {
+                swap(arr[i], arr[j]);
+                i++;
+            }
+        }
+        swap(this->arr[i], this->arr[r]);
+        return i;
+    }
+
+    T kthSmallest(int l, int r, int k)
+    {
+        if (k > 0 && k <= r - l + 1)
+        {
+            int index = partition(l, r);
+
+            if (index - l == k - 1)
+            {
+                return this->arr[index];
+            }
+
+            if (index - l > k - 1)
+            {
+                return kthSmallest(l, index - 1, k);
+            }
+
+            return kthSmallest(index + 1, r, k - index + l - 1);
+        }
+        return -1;
+    }
+
     T QSelect(int k)
     {
-        if (k < 0 || k >= this->size)
-        {
-            std::cout << "Invalid value of k" << std::endl;
-            return T(); // Return default value of type T
-        }
-        T *tempArr = new T[this->size];
-        for (int i = 0; i < this->size; i++)
-        {
-            tempArr[i] = this->arr[i];
-        }
-        int left = 0;
-        int right = this->size - 1;
-        while (left <= right)
-        {
-            int pivotIndex = left + (right - left) / 2;
-            T pivotValue = tempArr[pivotIndex];
-            int i = left;
-            int j = right;
-            while (i <= j)
-            {
-                while (tempArr[i] < pivotValue)
-                {
-                    i++;
-                }
-                while (tempArr[j] > pivotValue)
-                {
-                    j--;
-                }
-                if (i <= j)
-                {
-                    std::swap(tempArr[i], tempArr[j]);
-                    i++;
-                    j--;
-                }
-            }
-            if (k <= j)
-            {
-                right = j;
-            }
-            else if (k >= i)
-            {
-                left = i;
-            }
-            else
-            {
-                delete[] tempArr;
-                return tempArr[k];
-            }
-        }
-        delete[] tempArr;
-        return T(); // Return default value of type T
+        return kthSmallest(0, this->size - 1, k);
     }
+
     void merge(T *arr, int left, int mid, int right)
     {
         int leftSize = mid - left + 1;
