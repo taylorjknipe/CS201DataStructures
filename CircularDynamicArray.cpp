@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cstdlib>
 
 template <class T>
 class CircularDynamicArray
@@ -52,7 +53,7 @@ public:
 
         for (int i = 0; i < this->size; i++)
         {
-            this->arr[i] = other.arr[i];
+            this->arr[(i + frontIndex) % capac] = other.arr[(i + frontIndex) % capac];
         }
     }
 
@@ -162,127 +163,91 @@ public:
         this->frontIndex = -1;
     }
 
-    int partition(int l, int r)
+    int partition(T *temp, int l, int r)
     {
         int pivotIndex = l + rand() % (r - l + 1);
 
-        swap(this->arr[pivotIndex], this->arr[r]);
+        std::swap(temp[pivotIndex], temp[r]);
 
-        int x = this->arr[r], i = l;
-        for (int j = l; j <= r - 1; j++)
+        T pivot = temp[r];
+        int i = l - 1;
+
+        for (int j = l; j < r; j++)
         {
-            if (this->arr[j] <= x)
+            if (temp[j] <= pivot)
             {
-                swap(arr[i], arr[j]);
                 i++;
+                std::swap(temp[i], temp[j]);
             }
         }
-        swap(this->arr[i], this->arr[r]);
-        return i;
+
+        std::swap(temp[i + 1], temp[r]);
+        return i + 1;
     }
 
-    T kthSmallest(int l, int r, int k)
+    T kthSmallest(T *temp, int l, int r, int k)
     {
         if (k > 0 && k <= r - l + 1)
         {
-            int index = partition(l, r);
+            int index = partition(temp, l, r);
 
             if (index - l == k - 1)
             {
-                return this->arr[index];
+                return temp[index];
             }
 
             if (index - l > k - 1)
             {
-                return kthSmallest(l, index - 1, k);
+                return kthSmallest(temp, l, index - 1, k);
             }
 
-            return kthSmallest(index + 1, r, k - index + l - 1);
+            return kthSmallest(temp, index + 1, r, k - index + l - 1);
         }
         return -1;
     }
 
     T QSelect(int k)
     {
-        return kthSmallest(0, this->size - 1, k);
+        T *temp = new T[this->size];
+        for (int i = 0; i < this->size; i++)
+        {
+            temp[i] = this->arr[(this->frontIndex + i) % this->capac];
+        }
+        T result = kthSmallest(temp, 0, this->size - 1, k);
+        delete[] temp;
+        return result;
     }
 
-    void merge(T *arr, int left, int mid, int right)
-    {
-        int leftSize = mid - left + 1;
-        int rightSize = right - mid;
-
-        T *leftArr = new T[leftSize];
-        T *rightArr = new T[rightSize];
-
-        for (int i = 0; i < leftSize; i++)
-        {
-            leftArr[i] = arr[left + i];
-        }
-
-        for (int i = 0; i < rightSize; i++)
-        {
-            rightArr[i] = arr[mid + 1 + i];
-        }
-
-        int i = 0;
-        int j = 0;
-        int k = left;
-
-        while (i < leftSize && j < rightSize)
-        {
-            if (leftArr[i] <= rightArr[j])
-            {
-                arr[k] = leftArr[i];
-                i++;
-            }
-            else
-            {
-                arr[k] = rightArr[j];
-                j++;
-            }
-            k++;
-        }
-
-        while (i < leftSize)
-        {
-            arr[k] = leftArr[i];
-            i++;
-            k++;
-        }
-
-        while (j < rightSize)
-        {
-            arr[k] = rightArr[j];
-            j++;
-            k++;
-        }
-
-        delete[] leftArr;
-        delete[] rightArr;
-    }
-
-    void mergeSort(T *arr, int left, int right)
+    void quickSort(T *temp, int left, int right)
     {
         if (left < right)
         {
-            int mid = left + (right - left) / 2;
-            mergeSort(arr, left, mid);
-            mergeSort(arr, mid + 1, right);
-            merge(arr, left, mid, right);
+            int pivot = partition(temp, left, right);
+            quickSort(temp, left, pivot - 1);
+            quickSort(temp, pivot + 1, right);
         }
     }
 
     void Sort()
     {
-        mergeSort(this->arr, 0, this->size - 1);
+        T *temp = new T[this->size];
+        for (int i = 0; i < this->size; i++)
+        {
+            temp[i] = this->arr[(this->frontIndex + i) % this->capac];
+        }
+        quickSort(temp, 0, this->size - 1);
+        for (int i = 0; i < this->size; i++)
+        {
+            this->arr[(this->frontIndex + i) % this->capac] = temp[i];
+        }
+        delete[] temp;
     }
 
     int linearSearch(T item)
     {
         for (int i = 0; i < this->size; i++)
         {
-            if (this->arr[i] == item)
+            if (this->arr[(this->frontIndex + i) % this->capac] == item)
             {
                 return i;
             }
@@ -294,8 +259,18 @@ public:
     {
         return binarySearcher(this->arr, this->frontIndex, this->frontIndex + this->size - 1, item);
     }
-
+    
     int binarySearcher(T *arr, int l, int r, T key) {
-        return 1;
+        if (r >= l) {
+            int mid = l + (r - l) / 2;
+            if (arr[mid] == key) {
+                return mid;
+            } else if (arr[mid] > key) {
+                return binarySearcher(arr, l, mid - 1, key);
+            } else {
+                return binarySearcher(arr, mid + 1, r, key);
+            }
+        }
+        return -1;
     }
 };
