@@ -6,18 +6,18 @@ class CircularDynamicArray
 private:
     T *arr;
     int size;
-    int capacity;
+    int capac;
     int frontIndex;
     void resize(int newCapacity)
     {
         T *temp = new T[newCapacity];
         for (int i = 0; i < this->size; i++)
         {
-            temp[i] = this->arr[(this->frontIndex + i) % this->capacity];
+            temp[i] = this->arr[(this->frontIndex + i) % this->capac];
         }
         delete[] this->arr;
         this->arr = temp;
-        this->capacity = newCapacity;
+        this->capac = newCapacity;
         this->frontIndex = 0;
     }
 
@@ -25,16 +25,16 @@ public:
     CircularDynamicArray()
     {
         this->size = 0;
-        this->capacity = 2;
-        this->arr = new T[this->capacity];
+        this->capac = 2;
+        this->arr = new T[this->capac];
         this->frontIndex = -1;
     }
 
     CircularDynamicArray(int s)
     {
         this->size = s;
-        this->capacity = s;
-        this->arr = new T[this->capacity];
+        this->capac = s;
+        this->arr = new T[this->capac];
         this->frontIndex = -1;
     }
 
@@ -46,8 +46,8 @@ public:
     CircularDynamicArray(const CircularDynamicArray &other)
     {
         this->size = other.size;
-        this->capacity = other.capacity;
-        this->arr = new T[this->capacity];
+        this->capac = other.capac;
+        this->arr = new T[this->capac];
         this->frontIndex = other.frontIndex;
 
         for (int i = 0; i < this->size; i++)
@@ -63,8 +63,8 @@ public:
             delete[] this->arr;
 
             this->size = other.size;
-            this->capacity = other.capacity;
-            this->arr = new T[this->capacity];
+            this->capac = other.capac;
+            this->arr = new T[this->capac];
             this->frontIndex = other.frontIndex;
 
             for (int i = 0; i < this->size; i++)
@@ -87,19 +87,19 @@ public:
 
     void addEnd(T item)
     {
-        if (this->size == this->capacity)
+        if (this->size == this->capac)
         {
-            this->resize(this->capacity * 2);
+            this->resize(this->capac * 2);
         }
-        this->arr[(this->frontIndex + this->size) % this->capacity] = item;
+        this->arr[(this->frontIndex + this->size) % this->capac] = item;
         this->size++;
     }
 
     void addFront(T item)
     {
-        if (this->size == this->capacity)
+        if (this->size == this->capac)
         {
-            this->resize(this->capacity * 2);
+            this->resize(this->capac * 2);
         }
         this->frontIndex = 0;
         for (int i = this->size; i > 0; i--)
@@ -118,9 +118,9 @@ public:
             return;
         }
         this->size--;
-        if (this->size <= this->capacity / 4)
+        if (this->size <= this->capac / 4)
         {
-            this->resize(this->capacity / 2);
+            this->resize(this->capac / 2);
         }
     }
 
@@ -134,14 +134,14 @@ public:
         this->arr[this->frontIndex] = T();
         for (int i = 0; i < this->size; i++)
         {
-            this->arr[(this->frontIndex + i) % this->capacity] = this->arr[(this->frontIndex + i + 1) % this->capacity];
+            this->arr[(this->frontIndex + i) % this->capac] = this->arr[(this->frontIndex + i + 1) % this->capac];
         }
         this->frontIndex = 0;
         arr[this->size - 1] = T();
         this->size--;
-        if (this->size <= this->capacity / 4)
+        if (this->size <= this->capac / 4)
         {
-            this->resize(this->capacity / 2);
+            this->resize(this->capac / 2);
         }
     }
 
@@ -150,17 +150,17 @@ public:
         return this->size;
     }
 
-    int getCapacity()
+    int capacity()
     {
-        return this->capacity;
+        return this->capac;
     }
 
     void clear()
     {
         delete[] this->arr;
         this->size = 0;
-        this->capacity = 2;
-        this->arr = new T[this->capacity];
+        this->capac = 2;
+        this->arr = new T[this->capac];
         this->frontIndex = -1;
     }
 
