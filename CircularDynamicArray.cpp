@@ -82,7 +82,7 @@ public:
         {
             std::cout << "Index out of bounds" << std::endl;
         }
-        return this->arr[i];
+        return this->arr[(this->frontIndex + i) % capac];
     }
 
     void addEnd(T item)
@@ -90,6 +90,10 @@ public:
         if (this->size == this->capac)
         {
             this->resize(this->capac * 2);
+        }
+        if (this->size == 0)
+        {
+            this->frontIndex = 0;
         }
         this->arr[(this->frontIndex + this->size) % this->capac] = item;
         this->size++;
@@ -101,12 +105,12 @@ public:
         {
             this->resize(this->capac * 2);
         }
-        this->frontIndex = 0;
-        for (int i = this->size; i > 0; i--)
+        if (this->size == 0)
         {
-            this->arr[i] = this->arr[i - 1];
+            this->frontIndex = 0;
         }
-        this->arr[0] = item;
+        this->frontIndex = (this->frontIndex - 1 + this->capac) % this->capac;
+        this->arr[frontIndex] = item;
         this->size++;
     }
 
@@ -131,13 +135,7 @@ public:
             std::cout << "Array is empty" << std::endl;
             return;
         }
-        this->arr[this->frontIndex] = T();
-        for (int i = 0; i < this->size; i++)
-        {
-            this->arr[(this->frontIndex + i) % this->capac] = this->arr[(this->frontIndex + i + 1) % this->capac];
-        }
-        this->frontIndex = 0;
-        arr[this->size - 1] = T();
+        this->frontIndex = (this->frontIndex + 1) % this->capac;
         this->size--;
         if (this->size <= this->capac / 4)
         {
@@ -294,24 +292,10 @@ public:
 
     int binSearch(T item)
     {
-        int left = 0;
-        int right = this->size - 1;
-        while (left <= right)
-        {
-            int mid = left + (right - left) / 2;
-            if (this->arr[mid] == item)
-            {
-                return mid;
-            }
-            if (this->arr[mid] < item)
-            {
-                left = mid + 1;
-            }
-            else
-            {
-                right = mid - 1;
-            }
-        }
-        return -1;
+        return binarySearcher(this->arr, this->frontIndex, this->frontIndex + this->size - 1, item);
+    }
+
+    int binarySearcher(T *arr, int l, int r, T key) {
+        return 1;
     }
 };
